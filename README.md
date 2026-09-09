@@ -1,120 +1,113 @@
 # 📦 Storage & Artifact Platform
 
 <p align="center">
-  <strong>Persistent Storage • Distributed Storage • Object Storage • Artifact Storage</strong>
+  <img src="https://github.com/MoeinBineshpazhooh.png?size=160" width="120" alt="Moein Bineshpazhooh" />
 </p>
 
 <p align="center">
-  <em>Implementation-ready infrastructure portfolio for Kubernetes storage, object storage, registries, and artifact repositories.</em>
+  <strong>Persistent Storage • Distributed Storage • Object Storage • Artifact Repositories</strong>
 </p>
 
+<p align="center"><em>Hands-on DevOps infrastructure portfolio built around real implementation evidence, reusable manifests, validation workflows, and operational lessons.</em></p>
+
 <p align="center">
-  <img src="https://img.shields.io/badge/Kubernetes-Storage-326CE5?logo=kubernetes&logoColor=white" alt="Kubernetes Storage" />
-  <img src="https://img.shields.io/badge/Longhorn-Operations-00A3FF" alt="Longhorn" />
-  <img src="https://img.shields.io/badge/Ceph-Lab-EF4A2E" alt="Ceph" />
-  <img src="https://img.shields.io/badge/MinIO-S3-C72E49?logo=minio&logoColor=white" alt="MinIO" />
-  <img src="https://img.shields.io/badge/Harbor-Registry-60B932?logo=harbor&logoColor=white" alt="Harbor" />
-  <img src="https://img.shields.io/badge/Nexus-Artifacts-1B1C30" alt="Nexus" />
+<img src="https://img.shields.io/badge/Kubernetes-Storage-326CE5?logo=kubernetes&logoColor=white" />
+<img src="https://img.shields.io/badge/Longhorn-Operations-00A3FF" />
+<img src="https://img.shields.io/badge/Ceph-Lab-EF4A2E" />
+<img src="https://img.shields.io/badge/MinIO-S3-C72E49?logo=minio&logoColor=white" />
+<img src="https://img.shields.io/badge/Harbor-Registry-60B932?logo=harbor&logoColor=white" />
+<img src="https://img.shields.io/badge/JFrog-Artifactory-41B883?logo=jfrog&logoColor=white" />
 </p>
 
 ---
 
-## 🎯 What this repository demonstrates
+## 🎯 What I Actually Implemented
 
-This repository connects the storage layers behind a modern Kubernetes platform:
-
-```text
-                         ┌──────────────────────────┐
-                         │   Kubernetes Workloads   │
-                         └────────────┬─────────────┘
-                                      │
-                   ┌──────────────────┼──────────────────┐
-                   │                  │                  │
-                   ▼                  ▼                  ▼
-              PV / PVC            Images             Packages
-                   │                  │                  │
-          ┌────────┴───────┐          │          ┌───────┴───────┐
-          │                │          │          │               │
-      Longhorn           Ceph      Harbor      Nexus          CI/CD
-          │                │          │          │
-          └────────┬───────┘          │          │
-                   │                  │          │
-                   ▼                  └────┬─────┘
-             Kubernetes                  │
-               Storage                   ▼
-                                      Artifacts
-
-                         ┌──────────────────────────┐
-                         │         MinIO             │
-                         │   S3-compatible Object   │
-                         │   Storage for ELK Backup  │
-                         └──────────────────────────┘
-```
-
-The goal is not to collect tutorials. Each section follows the same practical pattern:
-
-**Understand → Implement → Validate → Operate → Troubleshoot**
-
----
-
-## 🧭 Experience Matrix
-
-| Technology | Evidence level | Practical scope |
+| Technology | Experience | What is documented |
 |---|---|---|
 | 🟢 **Longhorn** | Operational | Kubernetes StorageClass, PV/PVC, application integration, troubleshooting, capacity management |
-| 🔵 **Ceph** | Hands-on lab | Personally deployed six-node 3+3 test environment, Kubernetes integration, PV/PVC validation |
-| 🟣 **MinIO** | Hands-on integration | Single-node Docker Compose deployment, persistent storage, S3-compatible Elasticsearch snapshots |
-| 🟢 **Harbor** | Operational | Private image registry, Kubernetes image pulls, CI/CD and offline/air-gapped image workflows |
-| ⚪ **Nexus** | Evidence-controlled | Artifact repository documentation and sanitized templates only where implementation details are validated |
+| 🔵 **Ceph** | Hands-on lab | Personally deployed 6-node 3+3 test environment and integrated it with Kubernetes for PV/PVC validation |
+| 🟣 **MinIO** | Hands-on integration | Single-node Docker Compose deployment with persistent storage; S3 backend for daily Elasticsearch snapshots |
+| 🟢 **Harbor** | Operational | Private container registry used by Kubernetes, CI/CD and offline/air-gapped workflows |
+| 🟢 **JFrog Artifactory** | Operational usage | Used as an artifact/package proxy layer with remote, private and local repositories; GitLab CI/CD consumed repositories for dependency restore |
+| ⚪ **Nexus** | Reference | Kept as a repository-manager reference area; no unsupported personal implementation claims |
 
-> **Evidence boundary:** production/operational work and laboratory work are deliberately separated. The repository does not claim ownership of platforms implemented by another engineer.
-
----
-
-## 🗺️ Repository Navigation
-
-| Area | Purpose | Start here |
-|---|---|---|
-| 🏗️ Architecture | Platform-level design and relationships | [`docs/architecture/`](docs/architecture/) |
-| ☸️ Kubernetes Storage | Longhorn + Ceph | [`docs/kubernetes-storage/`](docs/kubernetes-storage/) |
-| 🪣 Object Storage | MinIO + ELK snapshots | [`docs/object-storage/`](docs/object-storage/) |
-| 📦 Artifact Storage | Harbor + Nexus | [`docs/artifact-storage/`](docs/artifact-storage/) |
-| 🧩 Manifests | Implementation-ready sanitized examples | [`manifests/`](manifests/) |
-| 🧪 Examples | Generic validation workloads | [`examples/`](examples/) |
-| 🔧 Runbooks | Repeatable troubleshooting procedures | [`docs/runbooks/`](docs/runbooks/) |
+> **Evidence boundary:** production/operational work, lab work, and reference material are explicitly separated. The repository does not claim platform ownership where the underlying platform was implemented by another engineer.
 
 ---
 
-## 🧩 Kubernetes Storage Model
+## 🏗️ Architecture
 
 ```text
-Application
-    │
-    ▼
-   Pod
-    │
-    ▼
-   PVC ───────────────┐
-    │                 │
-    ▼                 ▼
-StorageClass      Application
-    │              Integration
-    ▼
-Provisioner
-    │
-    ▼
-PV / Storage Backend
+                           STORAGE & ARTIFACT PLATFORM
+                                      │
+        ┌─────────────────────────────┼─────────────────────────────┐
+        │                             │                             │
+        ▼                             ▼                             ▼
+ Persistent / Block             Object Storage               Artifact Storage
+        │                             │                             │
+   ┌────┴────┐                      MinIO              ┌────────────┼────────────┐
+   │         │                        │                │            │            │
+Longhorn   Ceph                 ELK Snapshots       Harbor       JFrog        Nexus
+   │         │                                         │        Artifactory   │
+   ▼         ▼                                         ▼            │            ▼
+ PV/PVC    PV/PVC                                   Images     Packages /      Reference
+   │         │                                                  Dependencies
+   └─────────┴──────────────────────┬──────────────────────────────┘
+                                    ▼
+                              Kubernetes / CI/CD
 ```
 
-The repository keeps the Kubernetes storage abstraction visible so the technology-specific sections explain **why** a resource exists, not only how to write YAML.
+### Traffic & Artifact Flow
+
+```text
+Developer
+   │
+   ▼
+GitLab CI/CD
+   │
+   ├──────────────► Harbor ─────────► Kubernetes image pull
+   │
+   └──────────────► JFrog Artifactory
+                         │
+                         ├── Remote repositories
+                         ├── Private repositories
+                         └── Local repositories
+                                  │
+                                  ▼
+                           Dependency restore
+
+Elasticsearch ──► S3 API ──► MinIO ──► Snapshot storage
+
+Kubernetes workload ──► PVC ──► StorageClass ──► Longhorn / Ceph
+```
 
 ---
 
-## 🟢 Longhorn — Kubernetes Storage Operations
+## 🧭 Why These Technologies Belong Together
 
-The documented environment was a Kubernetes cluster with **3 control-plane nodes and 18 workers**. The underlying Longhorn platform was implemented by another engineer.
+A platform needs several different storage models rather than one universal storage system:
 
-My hands-on scope was the Kubernetes consumption and operational layer:
+- **Block / persistent storage** → application volumes and Kubernetes PV/PVC.
+- **Distributed storage** → resilient storage experimentation and Kubernetes integration.
+- **Object storage** → backups and snapshots through S3-compatible APIs.
+- **Container registry** → OCI/container images required by Kubernetes and CI/CD.
+- **Artifact repository** → packages and dependencies consumed by build pipelines.
+
+The repository therefore focuses on the complete path from **workload → data → image → dependency → delivery**.
+
+---
+
+## ☸️ Longhorn — Kubernetes Storage Operations
+
+### Environment
+
+- Kubernetes cluster
+- 3 control-plane nodes
+- 18 worker nodes
+- Longhorn platform implemented by another engineer
+
+### My hands-on scope
 
 - StorageClass configuration
 - PersistentVolume lifecycle
@@ -123,7 +116,7 @@ My hands-on scope was the Kubernetes consumption and operational layer:
 - Storage troubleshooting
 - Capacity management
 
-### Implementation
+### Quick validation
 
 ```bash
 kubectl apply -f manifests/longhorn/storageclass-pvc.yaml
@@ -133,158 +126,297 @@ kubectl get pvc
 kubectl get pods
 ```
 
-📁 [Longhorn documentation](docs/kubernetes-storage/longhorn/)
+📁 [`docs/kubernetes-storage/longhorn/`](docs/kubernetes-storage/longhorn/)
 
-📁 [Longhorn manifests](manifests/longhorn/)
+📁 [`manifests/longhorn/`](manifests/longhorn/)
 
 ---
 
 ## 🔵 Ceph — Six-Node Storage Lab
 
-A six-node Ceph environment was personally deployed as a **test/lab platform**, using a 3+3 layout. It was integrated with Kubernetes and validated through PV/PVC workloads.
+A dedicated **six-node test environment** was personally deployed using a 3+3 layout.
 
 ```text
-                 Ceph Laboratory
-                       │
-             ┌─────────┴─────────┐
-             │                   │
-          3 nodes             3 nodes
-             │                   │
-             └─────────┬─────────┘
-                       ▼
-                  Ceph Storage
-                       │
-                       ▼
-              Kubernetes Integration
-                       │
-                    PV / PVC
-                       │
-                       ▼
-                 Test Workload
+             Ceph Lab
+                │
+        ┌───────┴───────┐
+        │               │
+     3 nodes          3 nodes
+        │               │
+        └───────┬───────┘
+                ▼
+          Ceph Storage
+                │
+                ▼
+       Kubernetes Integration
+                │
+             PV / PVC
+                │
+                ▼
+          Validation Workload
 ```
 
-📁 [Ceph documentation](docs/kubernetes-storage/ceph/)
+Purpose:
 
-📁 [Ceph validation manifests](manifests/ceph/)
+- Distributed-storage evaluation
+- Kubernetes integration testing
+- PV/PVC validation
+- Template/productivity testing
 
-> This section is intentionally labelled **lab** and does not imply production deployment.
+> **Lab only:** this is not presented as production Ceph infrastructure.
+
+📁 [`docs/kubernetes-storage/ceph/`](docs/kubernetes-storage/ceph/)
+
+📁 [`manifests/ceph/`](manifests/ceph/)
 
 ---
 
-## 🟣 MinIO — S3-Compatible Storage for ELK Snapshots
+## 🟣 MinIO — S3 Object Storage for ELK Snapshots
 
-MinIO was implemented as a **single-node Docker Compose** service with persistent Docker storage. The practical integration was daily Elasticsearch snapshots to an S3-compatible object-storage backend.
+MinIO was personally implemented as a **single-node Docker Compose service** with persistent storage.
 
 ```text
 Elasticsearch
-     │
-     │ Daily Snapshot
-     ▼
+      │
+      │ Daily snapshot
+      ▼
  S3-compatible API
-     │
-     ▼
-   MinIO
-     │
-     ▼
- Persistent Storage
+      │
+      ▼
+    MinIO
+      │
+      ▼
+Persistent object data
 ```
 
-### Local implementation domain
+The practical use case is storing daily Elasticsearch snapshots in an S3-compatible backend.
 
-The portfolio standard is **`moein.local`** for fictional infrastructure endpoints.
-
-Examples:
+### Sanitized endpoints
 
 ```text
 minio.moein.local
 harbor.moein.local
-nexus.moein.local
 registry.moein.local
 ```
 
-📁 [MinIO documentation](docs/object-storage/minio/)
+📁 [`docs/object-storage/minio/`](docs/object-storage/minio/)
 
-📁 [MinIO manifests](manifests/minio/)
+📁 [`manifests/minio/`](manifests/minio/)
 
 ---
 
-## 📦 Harbor — Container Image Storage
+## 🐳 Harbor — Container Image Storage
 
-Harbor represents the container-image storage and distribution layer used by Kubernetes and CI/CD workflows.
+Harbor is the container-image layer used in the documented Kubernetes and CI/CD workflows.
 
 ```text
-Developer / CI
-      │
-      ▼
+GitLab CI/CD
+     │
+     ▼
  Build Image
-      │
-      ▼
-Harbor Registry
-      │
- ┌────┴─────────┐
- ▼              ▼
-Kubernetes   Offline Image
-Pull         Workflow
+     │
+     ▼
+harbor.moein.local
+     │
+ ┌───┴──────────────┐
+ ▼                  ▼
+Kubernetes       Offline / Air-Gapped
+Pull             Image Workflow
 ```
 
-The examples use `moein.local` and placeholders rather than private registry endpoints or credentials.
+The repository contains sanitized Kubernetes pull examples and deliberately excludes real registry credentials and internal endpoints.
 
-📁 [Harbor documentation](docs/artifact-storage/harbor/)
+📁 [`docs/artifact-storage/harbor/`](docs/artifact-storage/harbor/)
 
-📁 [Harbor manifests](manifests/harbor/)
+📁 [`manifests/harbor/`](manifests/harbor/)
 
 ---
 
-## 📦 Nexus — Artifact Repository
+## 🟢 JFrog Artifactory — Dependency & Artifact Proxy Layer
 
-Nexus is kept **evidence-controlled** in this portfolio. Generic repository-manager structure and sanitized templates are provided, while technology-specific implementation claims are added only when supported by validated experience.
+JFrog belongs here and is a **real operational part of the artifact-storage story**.
 
-📁 [Nexus documentation](docs/artifact-storage/nexus/)
+The documented usage is not "I deployed Artifactory." The accurate claim is:
 
-📁 [Nexus manifest area](manifests/nexus/)
+> **Used JFrog Artifactory as a repository/proxy layer, working with remote, private and local repositories and connecting GitLab CI/CD dependency restoration to the appropriate repositories.**
+
+### Architecture
+
+```text
+                         GitLab CI/CD
+                              │
+                              ▼
+                     Package / Dependency
+                           Restore
+                              │
+                              ▼
+                    JFrog Artifactory
+                              │
+             ┌────────────────┼────────────────┐
+             │                │                │
+             ▼                ▼                ▼
+        Remote Repo       Private Repo      Local Repo
+             │                │                │
+             └────────────────┼────────────────┘
+                              ▼
+                       Build Dependency
+```
+
+### Why it matters
+
+This demonstrates an important distinction:
+
+**Harbor stores container images; Artifactory serves package/artifact dependencies.**
+
+The CI/CD pipeline can therefore consume packages through a controlled internal repository layer rather than allowing every build job to depend directly on external package sources.
+
+### Fictional endpoint
+
+```text
+artifactory.moein.local
+```
+
+Credentials, tokens and private repository URLs are intentionally excluded.
+
+📁 [`docs/artifact-storage/jfrog-artifactory/`](docs/artifact-storage/jfrog-artifactory/)
+
+📁 [`manifests/jfrog-artifactory/`](manifests/jfrog-artifactory/)
+
+---
+
+## ⚪ Nexus — Repository Manager Reference
+
+Nexus remains in the repository as a **reference/implementation-template area**, not as a stronger personal claim than the evidence supports.
+
+📁 [`docs/artifact-storage/nexus/`](docs/artifact-storage/nexus/)
+
+📁 [`manifests/nexus/`](manifests/nexus/)
 
 ---
 
 ## 🧪 Implementation Standard
 
-Every technology directory is designed to answer five questions:
+Every component follows the portfolio's implementation pattern:
 
 ```text
-┌───────────────┐
-│ 1. What is it?│
-└───────┬───────┘
-        ▼
-┌────────────────┐
-│ 2. Why use it? │
-└───────┬────────┘
-        ▼
-┌─────────────────┐
-│ 3. How deploy?  │
-└───────┬─────────┘
-        ▼
-┌─────────────────┐
-│ 4. How validate?│
-└───────┬─────────┘
-        ▼
 ┌──────────────────┐
-│ 5. How troubleshoot? │
+│ 01 • WHAT        │  Purpose / responsibility
+└────────┬─────────┘
+         ▼
+┌──────────────────┐
+│ 02 • ARCHITECTURE│  Where it fits
+└────────┬─────────┘
+         ▼
+┌──────────────────┐
+│ 03 • IMPLEMENT   │  Ready-to-adapt manifests
+└────────┬─────────┘
+         ▼
+┌──────────────────┐
+│ 04 • VALIDATE    │  Commands / expected state
+└────────┬─────────┘
+         ▼
+┌──────────────────┐
+│ 05 • OPERATE     │  Day-2 workflow
+└────────┬─────────┘
+         ▼
+┌──────────────────┐
+│ 06 • TROUBLESHOOT│  Symptom → Evidence → Fix
 └──────────────────┘
 ```
 
-This makes the repository useful both as a **portfolio** and as a practical starting point for another engineer.
+---
+
+## 🔍 Validation Philosophy
+
+A manifest is not considered useful merely because it is valid YAML.
+
+Validation should prove the complete path:
+
+```text
+Configuration
+     │
+     ▼
+Resource Created
+     │
+     ▼
+Backend Ready
+     │
+     ▼
+Workload Uses Resource
+     │
+     ▼
+Read / Write or Pull / Restore
+     │
+     ▼
+Expected Result
+```
 
 ---
 
-## 🔐 Sanitization Rules
+## 🔧 Troubleshooting Model
 
-- Fictional infrastructure domain: **`moein.local`**
-- No production credentials
-- No tokens or passwords
-- No private keys
-- No internal production endpoints
-- Examples use explicit placeholders
-- Production and lab environments are clearly labelled
-- Manifests are designed to be adapted rather than copied blindly into production
+```text
+SYMPTOM
+   │
+   ▼
+OBSERVE
+   │
+   ▼
+COLLECT NON-SECRET EVIDENCE
+   │
+   ▼
+TRACE THE DEPENDENCY CHAIN
+   │
+   ▼
+ROOT CAUSE
+   │
+   ▼
+RECOVERY
+   │
+   ▼
+VALIDATE
+   │
+   ▼
+LESSON LEARNED
+```
+
+Examples include PVC provisioning, volume attachment/mount problems, capacity issues, image pulls, package restore failures, and repository connectivity.
+
+---
+
+## 🌐 Portfolio-Wide Fictional Domain
+
+All fictional infrastructure addresses in the GitHub portfolio use:
+
+```text
+moein.local
+```
+
+Examples:
+
+```text
+harbor.moein.local
+registry.moein.local
+artifactory.moein.local
+nexus.moein.local
+minio.moein.local
+gitlab.moein.local
+k8s.moein.local
+```
+
+This keeps examples consistent across repositories while clearly separating them from real infrastructure.
+
+---
+
+## 🔐 Engineering & Safety Principles
+
+- Production and lab claims are separated.
+- Sensitive infrastructure endpoints are sanitized.
+- Credentials, passwords, tokens and private keys never belong in Git.
+- Real production logs are not committed.
+- Manifests use placeholders and fictional domains.
+- Examples are implementation-oriented but must still be reviewed for the target environment.
+- Product capabilities are not presented as personal implementation unless supported by evidence.
 
 ---
 
@@ -302,6 +434,7 @@ Storage-Artifact-Platform/
 │   │   └── minio/
 │   ├── artifact-storage/
 │   │   ├── harbor/
+│   │   ├── jfrog-artifactory/
 │   │   └── nexus/
 │   └── runbooks/
 ├── manifests/
@@ -309,39 +442,36 @@ Storage-Artifact-Platform/
 │   ├── ceph/
 │   ├── minio/
 │   ├── harbor/
+│   ├── jfrog-artifactory/
 │   └── nexus/
 ├── examples/
-│   └── kubernetes/
 ├── diagrams/
 └── .gitignore
 ```
 
 ---
 
-## 🚀 Portfolio Roadmap
+## 🚀 Portfolio Checklist
 
-- [x] Establish storage/artifact platform scope
-- [x] Separate operational and lab evidence
-- [x] Standardize `moein.local` fictional domain
-- [x] Add implementation-oriented manifest structure
-- [x] Add Longhorn consumer manifest + validation workload
-- [x] Add Ceph PVC + validation workload
-- [x] Add MinIO Compose + environment template
-- [x] Add Harbor Kubernetes pull example
-- [ ] Expand technology-specific deployment guides
+- [x] Evidence-first storage scope
+- [x] Longhorn operational boundary
+- [x] Ceph six-node lab boundary
+- [x] MinIO + ELK snapshot workflow
+- [x] Harbor registry workflow
+- [x] JFrog Artifactory dependency/proxy workflow
+- [x] Portfolio-wide `moein.local` domain
+- [x] Sanitized implementation manifests
+- [ ] Complete technology-specific deployment runbooks
 - [ ] Add reusable validation scripts
-- [ ] Add troubleshooting runbooks
-- [ ] Add architecture diagrams as committed SVG/Mermaid assets
-- [ ] Add CI lint/validation for manifests
+- [ ] Add committed Mermaid/SVG architecture assets
+- [ ] Add CI validation for Kubernetes YAML
 
 ---
 
 ## ⭐ Portfolio Positioning
 
-This repository is designed to show more than familiarity with product names.
+This repository demonstrates practical infrastructure thinking across multiple storage models:
 
-It demonstrates the ability to connect:
+**Kubernetes workloads → persistent volumes → distributed storage → object snapshots → container images → package dependencies → GitLab CI/CD.**
 
-**Kubernetes workloads → persistent storage → distributed storage → object storage → container images → software artifacts → CI/CD operations.**
-
-The implementation examples are intentionally sanitized so the repository remains safe to share while still being useful to engineers who want to reproduce the concepts quickly.
+The goal is a repository that an engineer can **understand quickly, implement safely, validate confidently, and operate afterward**.
