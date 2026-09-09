@@ -1,58 +1,178 @@
-# 🐳 Harbor — Private Container Registry
+# 🟢 Harbor — Private Container Registry
 
-## Role
+<p align="center"><strong>Container Images • Kubernetes Pulls • CI/CD • Offline & Air-Gapped Workflows</strong></p>
 
-Harbor is the container-image storage and distribution layer documented in this portfolio for Kubernetes and CI/CD workflows.
+---
+
+## 🎯 01 • What This Component Solves
+
+Harbor provides the private container-image storage and distribution layer between CI/CD systems and Kubernetes workloads.
 
 ```text
-Developer / CI
-      │
-      ▼
- Build Image
-      │
-      ▼
+Source Code
+    │
+    ▼
+GitLab CI/CD
+    │
+    │ Build / Push
+    ▼
 Harbor Registry
-      │
- ┌────┴──────────┐
- ▼               ▼
-Kubernetes     Offline / Air-Gapped
-Pull           Image Workflow
+    │
+    │ Pull
+    ▼
+Kubernetes
 ```
 
-## Operational scope
+---
 
-- Image repository organization
-- Authentication and pull access
-- Kubernetes image consumption
+## 🧑‍💻 02 • My Hands-On Experience
+
+My experience is **operational registry usage and integration**, including:
+
+- Private image repositories
+- Kubernetes image pulls
 - CI/CD registry integration
-- Offline/air-gapped image preparation and distribution
+- Offline/air-gapped image workflows
+- Image availability troubleshooting
 
-## Sanitized implementation
+> **Evidence boundary:** this repository does not claim that I originally designed or installed the Harbor platform itself.
 
-The repository standardizes fictional infrastructure names around **`moein.local`**. The Kubernetes example uses a Harbor-style registry endpoint such as `harbor.moein.local`.
+---
+
+## 🏗️ 03 • Architecture
+
+```text
+                         ┌─────────────────┐
+                         │   GitLab CI/CD  │
+                         └────────┬────────┘
+                                  │
+                              Build / Push
+                                  │
+                                  ▼
+                         ┌─────────────────┐
+                         │ Harbor Registry │
+                         └────────┬────────┘
+                                  │
+                    ┌─────────────┴─────────────┐
+                    │                           │
+                    ▼                           ▼
+               Kubernetes                 Air-Gapped
+                  Pull                    Distribution
+```
+
+---
+
+## ⚙️ 04 • Implement
+
+The repository provides sanitized Kubernetes examples for authenticating to and pulling from a private registry.
+
+### Registry convention
+
+```text
+harbor.moein.local
+```
+
+### Apply the example
 
 ```bash
 kubectl apply -f manifests/harbor/image-pull-secret.example.yaml
 kubectl apply -f manifests/harbor/pod-pull-example.yaml
+```
+
+Then inspect:
+
+```bash
 kubectl get pod harbor-pull-test
 ```
 
-The secret manifest contains placeholders only. Create real credentials through the deployment or secret-management process; never commit them.
+📁 [`image-pull-secret.example.yaml`](../../../manifests/harbor/image-pull-secret.example.yaml)
 
-## Validation
+📁 [`pod-pull-example.yaml`](../../../manifests/harbor/pod-pull-example.yaml)
+
+> The manifests contain placeholders only. Real credentials must be supplied through the environment's secret-management process.
+
+---
+
+## 🧪 05 • Validate
+
+The validation chain is:
+
+```text
+Registry Reachable
+       │
+       ▼
+Authentication Works
+       │
+       ▼
+Image Exists
+       │
+       ▼
+Kubernetes Pulls Image
+       │
+       ▼
+Pod Starts
+```
+
+Useful checks:
 
 ```bash
+kubectl get pod harbor-pull-test
 kubectl describe pod harbor-pull-test
 kubectl get events --sort-by=.lastTimestamp
 ```
 
-For an air-gapped environment, verify that every required image is available in the internal registry before deployment.
+For an air-gapped environment, validate that **every required image and tag** is available internally before deployment.
 
-## Evidence boundary
+---
 
-This documentation describes operational registry usage and integration. It does not claim that the Harbor platform itself was originally designed or installed by the author.
+## 🔧 06 • Operate
 
-## Files
+Day-2 registry operations commonly involve:
 
-- [`manifests/harbor/image-pull-secret.example.yaml`](../../../manifests/harbor/image-pull-secret.example.yaml)
-- [`manifests/harbor/pod-pull-example.yaml`](../../../manifests/harbor/pod-pull-example.yaml)
+- Repository/image organization
+- Image availability checks
+- Authentication and pull access
+- Kubernetes image-pull troubleshooting
+- CI/CD push/pull verification
+- Offline image preparation
+
+---
+
+## 🚨 07 • Troubleshoot
+
+```text
+ImagePullBackOff
+      │
+      ├──► Image / tag exists?
+      ├──► Registry reachable?
+      ├──► Pull secret correct?
+      ├──► Namespace has access?
+      └──► Image available in offline registry?
+```
+
+Start with non-secret evidence:
+
+```bash
+kubectl describe pod <pod-name> -n <namespace>
+kubectl get events -n <namespace> --sort-by=.lastTimestamp
+```
+
+Do not print or commit registry credentials.
+
+---
+
+## 🧠 08 • Lessons Learned
+
+For Kubernetes in restricted environments, registry availability becomes part of the deployment dependency chain:
+
+**CI/CD → Registry → Kubernetes → Workload**
+
+In air-gapped environments, image preparation must happen before the workload reaches the cluster; a correct Kubernetes manifest cannot compensate for a missing internal image.
+
+---
+
+## 🔐 Portfolio Boundary
+
+All examples use fictional infrastructure names such as `harbor.moein.local` and placeholders for credentials and image paths.
+
+Real production endpoints, credentials and private configuration are intentionally excluded.
