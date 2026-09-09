@@ -1,0 +1,14 @@
+# Sanitized Kubernetes example for pulling a private image from Harbor.
+# Create the registry Secret separately using image-pull-secret.example.yaml.
+apiVersion: v1
+kind: Pod
+metadata:
+  name: harbor-pull-test
+  namespace: default
+spec:
+  imagePullSecrets:
+    - name: harbor-registry
+  containers:
+    - name: app
+      image: moein.local/replace-with-project/replace-with-image:replace-with-tag
+      imagePullPolicy: IfNotPresent
