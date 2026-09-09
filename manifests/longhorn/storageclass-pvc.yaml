@@ -1,0 +1,26 @@
+# Longhorn consumer-side manifest
+# Prerequisite: Longhorn is already installed in the Kubernetes cluster.
+# Adjust the StorageClass name to match the target cluster.
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: longhorn-fast
+provisioner: driver.longhorn.io
+allowVolumeExpansion: true
+reclaimPolicy: Delete
+volumeBindingMode: Immediate
+parameters:
+  numberOfReplicas: "3"
+  staleReplicaTimeout: "30"
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: demo-longhorn-pvc
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: longhorn-fast
+  resources:
+    requests:
+      storage: 10Gi
