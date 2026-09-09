@@ -1,8 +1,12 @@
-# 📦 Nexus — Artifact Repository
+# ⚪ Nexus — Artifact Repository Reference
 
-## Role
+<p align="center"><strong>Repository Manager • Package Storage • Publish / Consume • Reference Implementation</strong></p>
 
-Nexus is documented here as an artifact/package repository layer that can sit beside a container registry in a software-delivery platform.
+---
+
+## 🎯 01 • What This Component Solves
+
+Nexus Repository Manager can provide a centralized artifact/package layer alongside a container registry.
 
 ```text
 Developer / CI
@@ -12,49 +16,136 @@ Developer / CI
       │
       ▼
 Nexus Repository
-      │
- ┌────┴─────────┐
- ▼              ▼
-Publish       Consume
-Artifacts     Artifacts
+   ┌──┴──────┐
+   ▼         ▼
+Publish   Consume
+Artifacts Artifacts
 ```
 
-## Portfolio scope
+---
 
-This section is intentionally **evidence-controlled**. It provides architecture, operational concepts, and sanitized placeholders without inventing repository formats, deployment topology, or production implementation details that have not been validated.
+## 🧑‍💻 02 • Portfolio Evidence
 
-## Fictional endpoint standard
+Nexus is intentionally maintained as **reference material** in this repository.
 
-Use the portfolio-wide domain:
+The portfolio does not claim a personal Nexus deployment or operational implementation without validated project evidence.
+
+This distinction matters because **JFrog Artifactory is the artifact repository technology for which operational usage is documented separately**.
+
+---
+
+## 🏗️ 03 • Architecture
+
+```text
+                   Software Delivery Platform
+                              │
+              ┌───────────────┴───────────────┐
+              ▼                               ▼
+       Container Images                 Packages / Artifacts
+              │                               │
+              ▼                               ▼
+           Harbor                           Nexus
+              │                               │
+              ▼                               ▼
+        Kubernetes                    Build / Release
+```
+
+---
+
+## ⚙️ 04 • Implementation Pattern
+
+The fictional portfolio endpoint is:
 
 ```text
 nexus.moein.local
 ```
 
-Credentials, tokens, and certificates containing private keys must remain outside Git.
+A concrete implementation should document:
 
-## Implementation pattern
+1. Repository format
+2. Repository topology
+3. Client configuration
+4. Authentication method
+5. Publish workflow
+6. Consume workflow
+7. Validation
+
+No credentials or private endpoints belong in Git.
+
+---
+
+## 🧪 05 • Validate
+
+The generic validation path is:
 
 ```text
-CI Pipeline
-   │
-   ├── download dependency ──► Nexus
-   │
-   └── publish artifact ─────► Nexus
+Client Configuration
+       │
+       ▼
+Repository Reachable
+       │
+       ▼
+Artifact Published / Available
+       │
+       ▼
+Client Consumes Artifact
+       │
+       ▼
+Build / Application Succeeds
 ```
 
-When a concrete repository format is added, document:
+Use technology-specific commands only after the repository format and client have been established.
 
-1. Repository type
-2. Client configuration
-3. Authentication mechanism
-4. Publish example
-5. Consume example
-6. Validation commands
+---
 
-## Boundary with Harbor
+## 🔧 06 • Operate
 
-- **Harbor:** container images.
-- **Nexus:** general artifact/package repository responsibilities.
+Reference operational areas include:
 
-Do not use a container-registry example as evidence of a Nexus implementation.
+- Repository organization
+- Artifact lifecycle
+- Client configuration
+- Access control
+- Publish / consume workflows
+- Repository availability
+
+These are documented as generic repository-manager concepts, not personal production experience.
+
+---
+
+## 🚨 07 • Troubleshoot
+
+```text
+Artifact unavailable
+       │
+       ├──► Repository reachable?
+       ├──► Correct repository format?
+       ├──► Artifact published?
+       ├──► Client configured correctly?
+       └──► Access permissions correct?
+```
+
+---
+
+## 🧠 08 • Lessons / Design Boundary
+
+The most important distinction in this portfolio is between **container image storage** and **general package/artifact storage**:
+
+- **Harbor** → container/OCI image distribution.
+- **JFrog Artifactory** → operationally documented package/artifact proxy and repository layer.
+- **Nexus** → reference repository-manager implementation area.
+
+Keeping these boundaries explicit makes the portfolio technically defensible.
+
+---
+
+## 🔐 Safety
+
+- Fictional endpoint: `nexus.moein.local`
+- No credentials
+- No tokens
+- No private keys
+- No internal production endpoints
+- No unsupported personal implementation claims
+
+📁 [`Manifest reference area`](../../../manifests/nexus/)
