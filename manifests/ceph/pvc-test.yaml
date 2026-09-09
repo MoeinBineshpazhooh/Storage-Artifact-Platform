@@ -1,0 +1,30 @@
+# Sanitized Ceph-backed Kubernetes PVC test.
+# Replace the StorageClass name with the one created by your Ceph integration.
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: ceph-test-pvc
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: ceph-block
+  resources:
+    requests:
+      storage: 10Gi
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: ceph-storage-test
+spec:
+  containers:
+    - name: test
+      image: busybox:1.36
+      command: ["sh", "-c", "echo 'Ceph PVC validation'; sleep 3600"]
+      volumeMounts:
+        - name: data
+          mountPath: /data
+  volumes:
+    - name: data
+      persistentVolumeClaim:
+        claimName: ceph-test-pvc
