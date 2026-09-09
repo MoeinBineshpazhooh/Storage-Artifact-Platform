@@ -1,6 +1,5 @@
-# Longhorn consumer-side manifest
-# Prerequisite: Longhorn is already installed in the Kubernetes cluster.
-# Adjust the StorageClass name to match the target cluster.
+# Longhorn consumer-side example.
+# Prerequisite: Longhorn is already installed and the CSI driver is healthy.
 apiVersion: storage.k8s.io/v1
 kind: StorageClass
 metadata:
@@ -17,6 +16,7 @@ apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
   name: demo-longhorn-pvc
+  namespace: default
 spec:
   accessModes:
     - ReadWriteOnce
@@ -24,3 +24,34 @@ spec:
   resources:
     requests:
       storage: 10Gi
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: longhorn-storage-test
+  namespace: default
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: longhorn-storage-test
+  template:
+    metadata:
+      labels:
+        app: longhorn-storage-test
+    spec:
+      containers:
+        - name: test
+          image: busybox:1.36
+          command: ["sh", "-c"]
+          args:
+            - |
+              echo "Longhorn storage validation" > /data/health.txt
+              sleep 3600
+          volumeMounts:
+            - name: data
+              mountPath: /data
+      volumes:
+        - name: data
+          persistentVolumeClaim:
+            claimName: demo-longhorn-pvc
