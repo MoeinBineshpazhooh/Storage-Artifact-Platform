@@ -1,0 +1,16 @@
+# Sanitized single-node MinIO example.
+# Store credentials outside Git; use a .env file or your secret-management system.
+services:
+  minio:
+    image: minio/minio:latest
+    container_name: minio
+    network_mode: host
+    environment:
+      MINIO_ROOT_USER: ${MINIO_ROOT_USER}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD}
+    command: server /data --console-address ":9001"
+    volumes:
+      - minio_data:/data
+
+volumes:
+  minio_data:
