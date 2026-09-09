@@ -1,11 +1,33 @@
-# Nexus Repository Examples
+# ⚪ Nexus Manifests
 
-This directory is reserved for sanitized Nexus repository-manager examples.
+Sanitized reference area for Nexus Repository Manager.
 
-The goal is to make common artifact-repository consumption easy to reproduce without embedding organization-specific endpoints or credentials.
+> **Portfolio status:** reference material only. No unsupported personal implementation claim is made here.
+
+## Fictional endpoint
+
+```text
+nexus.moein.local
+```
+
+## Intended model
+
+```text
+CI / Developer
+      │
+      ▼
+Nexus Repository Manager
+      │
+ ┌────┴─────┐
+ ▼          ▼
+Consume    Publish
+Artifacts  Artifacts
+```
+
+Keep repository formats, deployment topology and client configuration specific to the environment being implemented.
 
 ## Safety
 
-- Use `nexus.example.internal` as the documentation hostname.
-- Keep credentials and tokens outside Git.
-- Document only repository formats and workflows that have been validated in the target environment.
+- Never commit credentials or tokens.
+- Use placeholders for repository names and endpoints.
+- Do not copy production configuration into this portfolio.
