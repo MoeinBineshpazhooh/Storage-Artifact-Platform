@@ -1,37 +1,43 @@
-# 🛠 Manual Ceph Deployment
+# 🛠 Manual / External Ceph Deployment
 
-This path represents an externally managed Ceph cluster: Linux hosts run Ceph daemons and Kubernetes consumes the resulting RBD storage through Ceph-CSI.
+This is the practical path for a Ceph cluster deployed independently of Kubernetes and then consumed by Kubernetes through RBD and Ceph-CSI.
 
-This is also the deployment model closest to the historical implementation represented in this portfolio: Ceph was deployed outside Kubernetes and then used by Kubernetes as storage.
+## Architecture
 
-## Flow
-
+```text
+Ceph hosts
+├── MON
+├── MGR
+└── OSDs
+     ↓
+   RADOS
+     ↓
+    RBD
+     ↓
+ Ceph-CSI
+     ↓
+StorageClass
+     ↓
+  PVC / PV
 ```
-Linux hosts
-  ├── MON
-  ├── MGR
-  └── OSDs
-       ↓
-     RADOS/RBD
-       ↓
-    Ceph-CSI
-       ↓
-   Kubernetes PV/PVC
-```
 
-## Suggested sequence
+## Build sequence
 
-1. Prepare Linux hosts and storage devices.
-2. Establish hostname/DNS, time synchronization and network connectivity.
+1. Prepare Linux hosts, disks, DNS/hosts and time synchronization.
+2. Prepare Ceph public/client and cluster networks as required.
 3. Bootstrap MON quorum.
 4. Deploy MGR.
 5. Prepare and deploy OSDs.
-6. Verify OSD `up`/`in` state.
-7. Validate CRUSH topology.
-8. Create/configure RBD pool.
-9. Create a restricted CephX identity for CSI.
-10. Deploy Ceph-CSI in Kubernetes.
-11. Create StorageClass and test PVC.
-12. Test failure/recovery behavior.
+6. Validate `ceph -s`, OSD state and CRUSH topology.
+7. Create an RBD pool and configure replication/PG settings.
+8. Create a restricted CephX identity for CSI.
+9. Deploy Ceph-CSI in Kubernetes.
+10. Create the RBD StorageClass.
+11. Provision a PVC and test a workload.
+12. Test OSD failure, recovery, capacity and volume operations.
 
-Exact historical commands are intentionally not claimed. Use the current Ceph release documentation for the chosen deployment mechanism.
+## Why this path matters
+
+This reflects the external-Ceph model used in the historical hands-on experience: the storage cluster is independent from the Kubernetes cluster, while Kubernetes consumes its block storage.
+
+Historical implementation details that cannot be reliably reconstructed are not presented as facts. The runbook is designed as a current, repeatable implementation path.
