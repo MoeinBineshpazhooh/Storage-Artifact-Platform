@@ -1,0 +1,3 @@
+# Pinned Rook operator manifest placeholder.
+# Download the operator.yaml from the selected Rook release and commit the pinned copy.
+# Do not use a moving "latest" URL for production.
