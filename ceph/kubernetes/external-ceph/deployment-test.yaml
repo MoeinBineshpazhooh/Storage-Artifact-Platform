@@ -1,0 +1,24 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ceph-rbd-test
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ceph-rbd-test
+  template:
+    metadata:
+      labels:
+        app: ceph-rbd-test
+    spec:
+      containers:
+        - name: test
+          image: nginx:stable
+          volumeMounts:
+            - name: data
+              mountPath: /data
+      volumes:
+        - name: data
+          persistentVolumeClaim:
+            claimName: ceph-rbd-test
