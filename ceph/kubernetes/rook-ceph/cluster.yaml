@@ -1,0 +1,9 @@
+# Rook CephCluster manifest template.
+# Adapt and validate for the target Kubernetes nodes/disks.
+# Production configuration should explicitly define:
+# - MON placement
+# - OSD storage devices or storageClassDeviceSets
+# - resource requests/limits
+# - network settings
+# - monitoring if required
+# Keep node names, disks and IPs as placeholders.
