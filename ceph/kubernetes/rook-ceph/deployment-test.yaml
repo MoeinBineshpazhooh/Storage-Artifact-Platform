@@ -1,0 +1,24 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: rook-ceph-rbd-test
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: rook-ceph-rbd-test
+  template:
+    metadata:
+      labels:
+        app: rook-ceph-rbd-test
+    spec:
+      containers:
+        - name: test
+          image: nginx:stable
+          volumeMounts:
+            - name: data
+              mountPath: /data
+      volumes:
+        - name: data
+          persistentVolumeClaim:
+            claimName: rook-ceph-rbd-test
