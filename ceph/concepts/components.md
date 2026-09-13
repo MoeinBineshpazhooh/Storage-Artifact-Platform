@@ -1,13 +1,10 @@
-# Ceph Components — What Each One Does
+# Ceph Components — Practical Mental Model
+
+Ceph becomes much easier to implement when each component has one clear responsibility.
 
 ## MON — Monitor
 
-Maintains cluster maps and quorum. MON is control-plane state, not application-data storage.
-
-Key concepts:
-- monitor quorum
-- cluster maps
-- authentication coordination
+Maintains authoritative cluster maps and quorum. MONs do not normally store application data. A production cluster normally uses an odd number of MONs so quorum can survive failures.
 
 ```bash
 ceph status
@@ -17,7 +14,7 @@ ceph mon stat
 
 ## MGR — Manager
 
-Provides management services, metrics and modules. Multiple MGRs can provide active/standby availability.
+Provides management modules, metrics and operational interfaces. MGR daemons can run active/standby.
 
 ```bash
 ceph mgr stat
@@ -26,7 +23,7 @@ ceph mgr module ls
 
 ## OSD — Object Storage Daemon
 
-Stores RADOS objects and performs reads/writes, replication, recovery, backfill, scrubbing and rebalancing.
+OSDs store RADOS objects and handle client I/O, replication, recovery, backfill, scrubbing and rebalancing.
 
 ```bash
 ceph osd tree
@@ -36,11 +33,11 @@ ceph osd df
 
 ## RADOS
 
-The distributed object-store foundation underneath Ceph services. RBD, CephFS and RGW ultimately use RADOS.
+The distributed object-storage foundation used by Ceph services. RBD, CephFS and RGW are interfaces built on top of RADOS.
 
 ## CRUSH
 
-Calculates placement through pools, PGs and the CRUSH hierarchy. It can enforce failure domains such as host or rack.
+Calculates object placement without a central placement table. CRUSH rules can separate replicas by host, rack or another failure domain.
 
 ```bash
 ceph osd crush tree
@@ -49,13 +46,13 @@ ceph osd crush rule ls
 
 ## Pool
 
-Logical namespace for RADOS objects. Pool settings determine replication or erasure coding, CRUSH rule and PG configuration.
+A logical namespace for RADOS objects. Pool configuration selects replication or erasure coding, a CRUSH rule and PG settings.
 
 ## PG — Placement Group
 
-A placement/recovery unit between objects and OSD sets.
+An intermediate placement/recovery unit. Objects map to PGs, and CRUSH maps PGs to OSD sets.
 
-```
+```text
 Object → Pool → PG → CRUSH → OSD set
 ```
 
@@ -63,42 +60,64 @@ PGs are central to peering, recovery and backfill.
 
 ## BlueStore
 
-The modern OSD storage backend. It stores Ceph objects directly on block devices and uses metadata structures such as RocksDB.
+The modern OSD storage backend. It stores Ceph objects directly on block devices and uses RocksDB for metadata.
 
 ## RBD
 
-Block-device abstraction on top of RADOS. An RBD image becomes the storage volume used by RBD clients and Ceph-CSI.
+RADOS Block Device provides a block-storage abstraction backed by RADOS. Kubernetes RBD volumes are ultimately RADOS data placed on OSDs.
 
 ## CephX
 
-Authentication and authorization mechanism for Ceph identities.
+Ceph authentication and authorization. Kubernetes integrations should use a restricted CephX identity rather than an administrator credential.
 
 ## Ceph-CSI
 
-CSI implementation that connects Kubernetes storage APIs to Ceph. Controller components provision/manage volumes; node components stage/publish/mount them.
+The CSI implementation connecting Kubernetes storage APIs to Ceph. Controller components provision/manage volumes; node components stage, publish and mount them.
 
-## CephFS / MDS
+## CephFS + MDS
 
-CephFS provides a distributed filesystem. MDS manages filesystem metadata. MDS is not required for RBD.
+CephFS provides a distributed filesystem. MDS manages filesystem metadata. Neither is required for an RBD-only Kubernetes design.
 
 ## RGW
 
-Object gateway providing S3-compatible/object-storage access. RGW is not required for RBD.
+RADOS Gateway provides object-storage APIs such as S3. It is separate from RBD block storage.
 
 ## Rook
 
-Kubernetes operator that manages Ceph lifecycle from Kubernetes. Rook is an orchestration layer, not a fundamental Ceph daemon.
+A Kubernetes operator that manages Ceph resources and lifecycle through Kubernetes APIs. It is an orchestration layer, not a replacement for MON/MGR/OSD/RADOS.
+
+## cephadm
+
+A Ceph-native deployment and lifecycle tool that uses the Ceph orchestrator to manage hosts and daemons.
 
 ## Dashboard
 
-Optional management/visibility interface. Not required for basic RBD storage.
+An optional management/observability interface. Useful operationally, but not required for basic RBD storage.
 
-### Troubleshooting rule
+## Layered troubleshooting
 
-When Kubernetes reports a storage problem, trace:
-
+```text
+Host / network
+      ↓
+MON quorum
+      ↓
+MGR / cluster management
+      ↓
+OSD
+      ↓
+PG / CRUSH / pool
+      ↓
+RBD
+      ↓
+CephX
+      ↓
+Ceph-CSI
+      ↓
+StorageClass
+      ↓
+PVC / PV
+      ↓
+Pod mount
 ```
-PVC → StorageClass → CSI → CephX → MON → Pool/RBD → PG/CRUSH → OSD
-```
 
-The visible error may be several layers away from the root cause.
+A Kubernetes error may therefore be caused by a Ceph layer several levels below the PVC.
