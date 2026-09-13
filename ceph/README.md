@@ -2,32 +2,24 @@
 
 <p align="center"><strong>Practical Ceph Deployment • RBD • CSI • Kubernetes • Operations</strong></p>
 
-Ceph is a distributed storage platform. This section is a practical implementation repository: understand the architecture, choose a deployment method, build a cluster, expose RBD storage, connect it to Kubernetes, validate it, and operate it.
+A practical Ceph implementation area covering multiple deployment models, component knowledge, Kubernetes integration, operations, and troubleshooting.
 
 ## 🧭 Practical Paths
 
-| Path | Use |
+| Path | Purpose |
 |---|---|
-| [Manual deployment](deployment/manual/README.md) | Traditional external Ceph cluster; closest to the historical hands-on model |
+| [Manual](deployment/manual/README.md) | Externally managed Ceph; closest to the historical implementation model |
 | [cephadm](deployment/cephadm/README.md) | Modern Ceph-native lifecycle management |
 | [Rook](deployment/rook/README.md) | Kubernetes-native Ceph lifecycle |
-| [External Ceph → Kubernetes](kubernetes/external-ceph/README.md) | Consume an externally managed Ceph cluster from Kubernetes |
-| [Rook Ceph → Kubernetes](kubernetes/rook-ceph/README.md) | Build and consume Ceph inside Kubernetes |
+| [External Ceph → Kubernetes](kubernetes/external-ceph/README.md) | Consume an externally managed Ceph cluster through RBD/CSI |
+| [Rook Ceph → Kubernetes](kubernetes/rook-ceph/README.md) | Build and consume Ceph from Kubernetes |
 
-## 🧠 Knowledge
+## 🧠 Component Knowledge
 
-- [Components](concepts/components.md)
-- [RADOS](concepts/rados.md)
-- [CRUSH](concepts/crush.md)
-- [Pools, PGs and replication](concepts/pools-pgs-replication.md)
-- [RBD](concepts/rbd.md)
+Start with [Components](concepts/components.md), then follow [RADOS](concepts/rados.md), [CRUSH](concepts/crush.md), [Pools/PGs/Replication](concepts/pools-pgs-replication.md), and [RBD](concepts/rbd.md).
 
 ## 🔧 Operations
 
-- Add/remove/replace OSDs
-- Capacity management
-- Recovery and rebalancing
-- Health validation
-- Kubernetes CSI troubleshooting
+[Operations](operations/README.md) covers OSD lifecycle, capacity, recovery and maintenance. [Troubleshooting](troubleshooting/README.md) follows the complete path from host/network through MON, OSD, PG/CRUSH, RBD, CephX, CSI and Kubernetes.
 
-All examples use placeholders such as `moein.local`, `<MON_IP>`, and `<CEPHX_KEY>`. Never commit real credentials or internal infrastructure values.
+All examples are sanitized and use placeholders. Never commit real credentials, internal hostnames or production IPs.
