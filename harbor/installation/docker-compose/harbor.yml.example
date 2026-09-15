@@ -1,0 +1,25 @@
+# Harbor configuration template
+# Replace placeholders before deployment
+
+hostname: harbor.moein.local
+
+http:
+  port: 80
+
+https:
+  port: 443
+  certificate: /data/cert/server.crt
+  private_key: /data/cert/server.key
+
+data_volume: /opt/harbor
+
+harbor_admin_password: CHANGE_ME
+
+database:
+  password: CHANGE_ME
+
+log:
+  level: info
+
+jobservice:
+  max_job_workers: 10
