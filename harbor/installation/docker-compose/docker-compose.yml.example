@@ -1,0 +1,64 @@
+# Sanitized Harbor Docker Compose template
+# Generated Harbor compose files should be produced by the official installer.
+# This file demonstrates service architecture only.
+
+services:
+  proxy:
+    image: goharbor/nginx-photon:${HARBOR_VERSION}
+    restart: always
+    ports:
+      - "80:8080"
+      - "443:8443"
+    volumes:
+      - ./nginx:/etc/nginx:ro
+      - ./certs:/etc/cert:ro
+    depends_on:
+      - core
+      - portal
+      - registry
+
+  core:
+    image: goharbor/harbor-core:${HARBOR_VERSION}
+    restart: always
+    depends_on:
+      - postgresql
+      - redis
+      - registry
+
+  portal:
+    image: goharbor/harbor-portal:${HARBOR_VERSION}
+    restart: always
+
+  registry:
+    image: goharbor/registry-photon:${HARBOR_VERSION}
+    restart: always
+    volumes:
+      - ${HARBOR_DATA}/registry:/storage
+
+  registryctl:
+    image: goharbor/harbor-registryctl:${HARBOR_VERSION}
+    restart: always
+
+  postgresql:
+    image: goharbor/harbor-db:${HARBOR_VERSION}
+    restart: always
+    volumes:
+      - ${HARBOR_DATA}/database:/var/lib/postgresql/data
+
+  redis:
+    image: goharbor/redis-photon:${HARBOR_VERSION}
+    restart: always
+    volumes:
+      - ${HARBOR_DATA}/redis:/var/lib/redis
+
+  jobservice:
+    image: goharbor/harbor-jobservice:${HARBOR_VERSION}
+    restart: always
+
+  log:
+    image: goharbor/harbor-log:${HARBOR_VERSION}
+    restart: always
+
+networks:
+  default:
+    name: harbor
