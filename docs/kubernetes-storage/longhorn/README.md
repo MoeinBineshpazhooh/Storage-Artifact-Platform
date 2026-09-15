@@ -4,15 +4,15 @@
 
 ---
 
-## 🎯 01 • What This Component Solves
+## 🎯 What This Component Solves
 
-Longhorn provides the storage backend behind Kubernetes persistent workloads.
+Longhorn provides persistent block storage for Kubernetes workloads.
 
-The important engineering layer documented here is the **Kubernetes storage consumption and operational workflow** rather than ownership of the underlying Longhorn platform.
+This section focuses on practical Kubernetes storage consumption: PV/PVC lifecycle, workload integration, validation, and troubleshooting.
 
 ---
 
-## 🧑‍💻 02 • My Hands-On Experience
+## 🧑‍💻 Experience Boundary
 
 ### Environment
 
@@ -22,158 +22,119 @@ Kubernetes Cluster
 └── 18 Worker Nodes
 ```
 
-The underlying Longhorn platform was implemented by another engineer.
+The Longhorn platform itself was implemented by another engineer.
 
-### My scope
+My practical scope:
 
 | Area | Hands-on scope |
 |---|---|
-| StorageClass | Configuration and consumption |
+| StorageClass | Configuration and usage |
 | PV | Lifecycle and troubleshooting |
-| PVC | Provisioning and lifecycle |
-| Workloads | Persistent-volume integration |
-| Operations | Troubleshooting and capacity management |
+| PVC | Creation and validation |
+| Applications | Persistent volume integration |
+| Operations | Capacity and storage issue investigation |
 
-> **Evidence boundary:** this repository does not claim that I designed or deployed the Longhorn platform itself.
+This repository separates platform ownership from operational experience.
 
 ---
 
-## 🏗️ 03 • Architecture
+## 🏗️ Architecture
 
 ```text
-Application
-     │
-     ▼
-    Pod
-     │
-     ▼
-    PVC
-     │
-     ▼
+Application Pod
+      |
+      v
+PersistentVolumeClaim
+      |
+      v
+PersistentVolume
+      |
+      v
 StorageClass
-     │
-     ▼
-Longhorn Provisioner
-     │
-     ▼
-Persistent Volume
-     │
-     ▼
-Longhorn Storage
+      |
+      v
+Longhorn Storage Backend
 ```
 
-The Kubernetes abstraction is the key operational interface: applications request storage through PVCs while the StorageClass connects that request to the backend.
+The important Kubernetes storage chain:
+
+```text
+Workload → PVC → StorageClass → Provisioner → PV → Storage Backend
+```
 
 ---
 
-## ⚙️ 04 • Implementation
+## ⚙️ Implementation Example
 
-The repository contains a sanitized consumer-side example:
-
-```bash
-kubectl apply -f manifests/longhorn/storageclass-pvc.yaml
-```
-
-Inspect the resulting resources:
+Example validation workflow:
 
 ```bash
 kubectl get storageclass
 kubectl get pv
-kubectl get pvc
-kubectl get pods
+kubectl get pvc -A
+kubectl describe pvc <name> -n <namespace>
 ```
 
-> If the target cluster already has an approved Longhorn StorageClass, reuse it rather than creating a duplicate StorageClass.
-
-📁 [`storageclass-pvc.yaml`](../../../manifests/longhorn/storageclass-pvc.yaml)
-
----
-
-## 🧪 05 • Validate
-
-A storage test should prove more than PVC creation:
+A successful storage test should prove:
 
 ```text
 StorageClass
-     │
-     ▼
+      |
+      v
 PVC Bound
-     │
-     ▼
+      |
+      v
 PV Created
-     │
-     ▼
+      |
+      v
 Pod Scheduled
-     │
-     ▼
+      |
+      v
 Volume Mounted
-     │
-     ▼
-Application Read / Write
+      |
+      v
+Application Read/Write
 ```
 
-Useful checks:
+---
+
+## 🔧 Day-2 Operations
+
+Common operational activities:
+
+- Investigate Pending PVCs
+- Validate volume attachment
+- Check application mounts
+- Review capacity usage
+- Troubleshoot storage-related deployment failures
+
+---
+
+## 🚨 Troubleshooting Flow
+
+```text
+PVC Pending
+   |
+   ├── Check StorageClass
+   ├── Check Kubernetes Events
+   ├── Check PV creation
+   ├── Check provisioner status
+   └── Check Longhorn backend health
+```
+
+Useful commands:
 
 ```bash
+kubectl get events -A --sort-by=.lastTimestamp
 kubectl get pvc -A
-kubectl describe pvc <pvc-name> -n <namespace>
 kubectl get pv
-kubectl describe pv <pv-name>
 kubectl describe pod <pod-name> -n <namespace>
 ```
 
 ---
 
-## 🔧 06 • Operate
+## 📌 Repository Position
 
-Typical day-2 activities include:
+This is a practical Kubernetes storage operations guide, not a Longhorn deployment guide.
 
-- Checking PVC/PV state
-- Investigating provisioning failures
-- Checking capacity-related symptoms
-- Reviewing workload volume consumption
-- Confirming successful mount/attach behavior
-- Validating storage after application changes
-
----
-
-## 🚨 07 • Troubleshoot
-
-```text
-PVC Pending
-   │
-   ├──► Check StorageClass
-   ├──► Check events
-   ├──► Check provisioner
-   ├──► Check PV creation
-   └──► Check Longhorn/backend health
-```
-
-Start with non-secret evidence:
-
-```bash
-kubectl get pvc -A
-kubectl get pv
-kubectl get storageclass
-kubectl get events -A --sort-by=.lastTimestamp
-```
-
-Never place credentials, private endpoints or production logs in this repository.
-
----
-
-## 🧠 08 • Lessons Learned
-
-The most important operational lesson is that Kubernetes storage problems should be traced through the complete dependency chain rather than treating a PVC as an isolated object:
-
-**Workload → PVC → StorageClass → Provisioner → PV → Storage Backend**
-
-That model makes capacity, provisioning, mount and application-storage failures much easier to isolate.
-
----
-
-## 📁 Repository Files
-
-- [`manifests/longhorn/`](../../../manifests/longhorn/)
-- [`Storage troubleshooting runbook`](../../runbooks/storage-troubleshooting.md)
-- [`Architecture`](../../architecture/)
+The focus is on how a DevOps engineer consumes, validates and operates persistent storage inside Kubernetes environments.
