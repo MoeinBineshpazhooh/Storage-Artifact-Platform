@@ -23,7 +23,7 @@ RBD image features can include layering, exclusive locking, object-map, fast-dif
 Useful commands:
 
 ```bash
-rbd pool ls
+ceph osd pool ls
 rbd ls <pool>
 rbd info <pool>/<image>
 rbd status <pool>/<image>

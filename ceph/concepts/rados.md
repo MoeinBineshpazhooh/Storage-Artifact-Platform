@@ -32,6 +32,6 @@ Useful checks:
 ceph -s
 ceph health detail
 ceph df
-rbd pool ls
+ceph osd pool ls
 rbd ls <pool>
 ```
