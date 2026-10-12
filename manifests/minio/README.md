@@ -50,8 +50,9 @@ Use the Compose example for a lightweight single-node deployment.
 
 ```bash
 cp .env.example .env
-# Edit .env locally; never commit .env.
-docker compose -f docker-compose.yaml up -d
+# Set an approved MINIO_IMAGE version/digest and fresh root credentials locally.
+# Never commit .env.
+docker compose --env-file .env -f docker-compose.yaml up -d
 ```
 
 ### Endpoints
@@ -59,17 +60,17 @@ docker compose -f docker-compose.yaml up -d
 Use the sanitized portfolio hostname:
 
 ```text
-S3 API:   http://minio.moein.local:9000
-Console:  http://minio.moein.local:9001
+S3 API:   http://127.0.0.1:9000
+Console:  http://127.0.0.1:9001
 ```
 
-For a local lab, resolve `minio.moein.local` through local DNS or `/etc/hosts`.
+Ports bind to loopback by default. For remote Elasticsearch clients, set `MINIO_BIND_ADDRESS` to the reviewed interface and configure TLS and firewall rules. Resolve the fictional hostname only in the target lab. Keep the same Compose project identity to reuse its named volume; `down -v` deletes that volume.
 
 ### Validate
 
 ```bash
-docker compose ps
-docker compose logs --tail=100 minio
+docker compose --env-file .env -f docker-compose.yaml ps
+docker compose --env-file .env -f docker-compose.yaml logs --tail=100 minio
 ```
 
 ---
@@ -78,18 +79,25 @@ docker compose logs --tail=100 minio
 
 The following pattern installs MinIO through the Helm chart in standalone mode.
 
-> **Security note:** The command below intentionally uses placeholder credentials. In real environments, prefer a Kubernetes Secret or an external secret-management workflow rather than putting credentials directly into shell history.
+Supply the referenced Secret before installation through your secure workflow. The command does not pass passwords in Helm values. Inspect the selected release's values and both server/client images before using it.
 
 ```bash
 helm repo add minio https://charts.min.io/
 helm repo update
 
 kubectl create namespace thanos-test
+# Create minio-credentials through your secure workflow in this namespace.
+# It must contain rootUser and rootPassword keys.
+# Set a reviewed chart version; inspect its values before installing.
+: "${MINIO_CHART_VERSION:?Set an approved chart version}"
+helm show values minio/minio --version "$MINIO_CHART_VERSION"
 
 helm install minio minio/minio \
   --namespace thanos-test \
-  --set accessKey=<your-access-key> \
-  --set secretKey=<your-secret-key> \
+  --version "$MINIO_CHART_VERSION" \
+  --set existingSecret=minio-credentials \
+  --set-json 'users=[]' \
+  --set resources.requests.memory=512Mi \
   --set persistence.enabled=false \
   --set replicas=1 \
   --set mode=standalone
@@ -114,39 +122,24 @@ For a lab/test environment, expose the console locally through port-forwarding:
 
 ```bash
 kubectl port-forward svc/minio-console 9001:9001 \
-  -n thanos-test \
-  --address 0.0.0.0
+  -n thanos-test
 ```
 
-Then access the console through the host's reachable address on port `9001`.
+Access the console locally at `http://127.0.0.1:9001`; the default port-forward listens on localhost.
 
 ---
 
-# 🔐 3. Retrieve Kubernetes Credentials
+# 🔐 3. Kubernetes Credential Source
 
-The Helm deployment creates a Secret containing the MinIO root credentials.
-
-Inspect the Secret metadata:
+The install command refers to the pre-existing `minio-credentials` Secret with `rootUser` and `rootPassword` keys. Supply credentials through your approved secret workflow rather than command-line Helm values. Confirm only metadata:
 
 ```bash
-kubectl get secret minio -n thanos-test
+kubectl get secret minio-credentials -n thanos-test
 ```
 
-Retrieve the values without committing or publishing them:
+This is a disposable lab chart pattern. The upstream values reviewed for chart 5.4.0 use `existingSecret` and include a sample additional console user; `users=[]` prevents creating that user. Review these fields, both server/client image versions and resource sizing for your selected chart release. The 512Mi request is a lab starting point, not a production sizing recommendation. With persistence disabled, Pod replacement can lose data: do not store Elasticsearch backups in this Kubernetes example.
 
-```bash
-kubectl get secret minio -n thanos-test \
-  -o jsonpath="{.data.rootUser}" | base64 --decode
-
-echo
-
-kubectl get secret minio -n thanos-test \
-  -o jsonpath="{.data.rootPassword}" | base64 --decode
-
-echo
-```
-
-> Never paste real credential output into Git, README files, screenshots, tickets, or public portfolio repositories.
+Reference: [upstream chart values](https://github.com/minio/minio/blob/master/helm/minio/values.yaml).
 
 ---
 
@@ -269,7 +262,7 @@ In the broader platform, MinIO can provide S3-compatible object storage for work
 # Kubernetes
 kubectl get pods -n thanos-test
 kubectl get svc -n thanos-test
-kubectl get secret minio -n thanos-test
+kubectl get secret minio-credentials -n thanos-test
 
 # MinIO Client
 mc alias list

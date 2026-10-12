@@ -100,7 +100,7 @@ The package manager used by the application should point to the appropriate Arti
 For example, a .NET project can use a sanitized NuGet source such as:
 
 ```text
-https://artifactory.moein.local/<nuget-repository>/v3/index.json
+https://artifactory.moein.local/artifactory/api/nuget/v3/<nuget-repository>/index.json
 ```
 
 ### 3. Restore through CI/CD

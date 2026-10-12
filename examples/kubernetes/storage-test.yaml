@@ -23,6 +23,8 @@ metadata:
   namespace: storage-lab
 spec:
   replicas: 1
+  strategy:
+    type: Recreate
   selector:
     matchLabels:
       app: storage-test
@@ -37,8 +39,12 @@ spec:
           command: ["sh", "-c"]
           args:
             - |
-              echo "storage validation" > /data/health.txt
-              sleep 3600
+              set -eu
+              if [ ! -e /data/health.txt ]; then
+                printf "%s\n" "storage validation" > /data/health.txt
+              fi
+              cat /data/health.txt
+              exec sleep 86400
           volumeMounts:
             - name: data
               mountPath: /data

@@ -4,6 +4,8 @@ metadata:
   name: ceph-rbd-test
 spec:
   replicas: 1
+  strategy:
+    type: Recreate
   selector:
     matchLabels:
       app: ceph-rbd-test
@@ -14,7 +16,8 @@ spec:
     spec:
       containers:
         - name: test
-          image: nginx:stable
+          image: busybox:1.36
+          command: ["sh", "-c", "exec sleep 86400"]
           volumeMounts:
             - name: data
               mountPath: /data

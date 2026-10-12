@@ -18,3 +18,9 @@ This path is for a Kubernetes-native Ceph implementation.
 Use a pinned Rook release and its matching CRDs/operator manifests. Create a CephCluster sized for the available lab nodes/disks, create an RBD pool and StorageClass, then run the supplied PVC/workload tests.
 
 Do not use unpinned `latest` manifests for production.
+
+`operator.yaml` and `cluster.yaml` in this directory contain comments only. They are planning placeholders, not installable resources. Obtain the complete operator/CRDs and cluster configuration for the chosen release before applying the consumer examples. The referenced `replicapool` must also exist.
+
+After the PVC/workload is ready, use the [persistence test](../../../docs/runbooks/persistence-validation.md) to verify data survives Pod replacement.
+
+New StorageClasses use Retain. Existing StorageClass fields cannot be assumed to update in place: use a new class name for a revised configuration and review existing PV policies separately. Keep PVCs intact when testing. Retain requires manual cleanup and is not a backup.
