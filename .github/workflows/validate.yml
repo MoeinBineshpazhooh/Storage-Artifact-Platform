@@ -27,4 +27,5 @@ jobs:
           cache-dependency-path: requirements-validation.txt
       - run: python -m pip install -r requirements-validation.txt
       - run: python scripts/validate.py
+      - run: python tests/test_validation.py
       - run: python -m py_compile scripts/check-persistence.py

@@ -23,7 +23,7 @@ Use the package-manager configuration appropriate for the project and point it t
 Example NuGet source:
 
 ```text
-https://artifactory.moein.local/<nuget-repository>/v3/index.json
+https://artifactory.moein.local/artifactory/api/nuget/v3/<nuget-repository>/index.json
 ```
 
 ## GitLab CI/CD

@@ -2,6 +2,7 @@
 from pathlib import Path
 import re
 import sys
+import json
 from urllib.parse import unquote, urlsplit
 import yaml
 
@@ -51,7 +52,7 @@ def validate(root):
             for doc in documents:
                 if not isinstance(doc, dict):
                     raise ValueError('expected a YAML mapping')
-                if relative.startswith('.github/workflows/'):
+                if relative.startswith('.github/'):
                     continue
                 if 'services' in doc:  # Compose examples
                     if not isinstance(doc['services'], dict) or not doc['services']:
@@ -65,6 +66,30 @@ def validate(root):
                 resources.append((path, doc))
         except (yaml.YAMLError, ValueError, TypeError, AttributeError) as error:
             errors.append(f'{relative}: {error}')
+
+    for path, doc in resources:
+        if doc['kind'] == 'StorageClass' and doc.get('reclaimPolicy') != 'Retain':
+            errors.append(f'{path.relative_to(root)}: new example StorageClasses must retain data')
+
+    for relative, variables in {
+        'manifests/minio/docker-compose.yaml': ('MINIO_IMAGE', 'MINIO_ROOT_USER', 'MINIO_ROOT_PASSWORD'),
+        'nexus/docker-compose.yml': ('NEXUS_IMAGE', 'NGINX_IMAGE'),
+    }.items():
+        text = (root / relative).read_text()
+        for variable in variables:
+            if '${' + variable + ':?' not in text:
+                errors.append(f'{relative}: {variable} must be explicitly required')
+        if 'network_mode: host' in text or ':latest' in text:
+            errors.append(f'{relative}: avoid host networking and latest images in lab defaults')
+        for line in text.splitlines():
+            if re.search(r':(9000|9001|8081|80|443):', line) and ':-127.0.0.1}' not in line:
+                errors.append(f'{relative}: published ports must default to loopback')
+    for path in paths:
+        if path.suffix == '.json':
+            try:
+                json.loads(path.read_text())
+            except ValueError as error:
+                errors.append(f'{path.relative_to(root)}: invalid JSON: {error}')
 
     claims = {(path.parent, doc['metadata'].get('namespace', 'default'), doc['metadata']['name'])
               for path, doc in resources if doc['kind'] == 'PersistentVolumeClaim'}

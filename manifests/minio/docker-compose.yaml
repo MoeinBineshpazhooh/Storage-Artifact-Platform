@@ -2,12 +2,14 @@
 # Store credentials outside Git; use a .env file or your secret-management system.
 services:
   minio:
-    image: minio/minio:latest
+    image: ${MINIO_IMAGE:?Set MINIO_IMAGE to an approved version or digest}
     container_name: minio
-    network_mode: host
+    ports:
+      - "${MINIO_BIND_ADDRESS:-127.0.0.1}:9000:9000"
+      - "${MINIO_BIND_ADDRESS:-127.0.0.1}:9001:9001"
     environment:
-      MINIO_ROOT_USER: ${MINIO_ROOT_USER}
-      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD}
+      MINIO_ROOT_USER: ${MINIO_ROOT_USER:?Set MINIO_ROOT_USER locally}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD:?Set MINIO_ROOT_PASSWORD locally}
     command: server /data --console-address ":9001"
     volumes:
       - minio_data:/data

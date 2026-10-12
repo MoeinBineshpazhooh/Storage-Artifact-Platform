@@ -182,7 +182,7 @@ parameters:
   pool: <rbd-pool>
   imageFormat: "2"
   imageFeatures: layering
-reclaimPolicy: Delete
+reclaimPolicy: Retain
 allowVolumeExpansion: true
 volumeBindingMode: Immediate
 ```

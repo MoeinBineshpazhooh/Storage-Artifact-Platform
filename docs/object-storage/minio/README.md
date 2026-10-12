@@ -63,10 +63,10 @@ Create the local environment file from the template:
 cp manifests/minio/.env.example manifests/minio/.env
 ```
 
-Then start MinIO:
+Edit that ignored local file with an approved image version/digest and fresh credentials, then start MinIO:
 
 ```bash
-docker compose -f manifests/minio/docker-compose.yaml up -d
+docker compose --env-file manifests/minio/.env -f manifests/minio/docker-compose.yaml up -d
 ```
 
 The portfolio uses the fictional endpoint:
@@ -82,8 +82,8 @@ Credentials are supplied externally and are never committed.
 ## 🧪 05 • Validate
 
 ```bash
-docker compose -f manifests/minio/docker-compose.yaml ps
-docker compose -f manifests/minio/docker-compose.yaml logs --tail=100 minio
+docker compose --env-file manifests/minio/.env -f manifests/minio/docker-compose.yaml ps
+docker compose --env-file manifests/minio/.env -f manifests/minio/docker-compose.yaml logs --tail=100 minio
 ```
 
 Validation should prove:
@@ -134,8 +134,8 @@ Snapshot Failure
 Useful non-secret checks:
 
 ```bash
-docker compose -f manifests/minio/docker-compose.yaml ps
-docker compose -f manifests/minio/docker-compose.yaml logs --tail=100 minio
+docker compose --env-file manifests/minio/.env -f manifests/minio/docker-compose.yaml ps
+docker compose --env-file manifests/minio/.env -f manifests/minio/docker-compose.yaml logs --tail=100 minio
 docker volume ls
 ```
 
@@ -152,3 +152,5 @@ Object storage is a different abstraction from PV/PVC-based block storage. For s
 The documented implementation is specifically **single-node MinIO with Docker Compose**. No distributed, erasure-coded or HA MinIO deployment is claimed.
 
 No credentials or private infrastructure endpoints belong in this repository.
+
+The Compose example now binds published ports to `127.0.0.1` by default and does not use host networking. Set `MINIO_BIND_ADDRESS` to a reviewed host interface only when remote clients need access; use TLS and firewall rules before sending credentials over a network. The named volume is retained; keep the same Compose project identity during upgrades and never use `down -v` on data you need.

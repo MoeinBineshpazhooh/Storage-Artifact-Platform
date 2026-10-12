@@ -454,9 +454,11 @@ parameters:
   imageFeatures: layering
   csi.storage.k8s.io/provisioner-secret-name: <csi-provisioner-secret>
   csi.storage.k8s.io/provisioner-secret-namespace: <namespace>
+  csi.storage.k8s.io/controller-expand-secret-name: <csi-provisioner-secret>
+  csi.storage.k8s.io/controller-expand-secret-namespace: <namespace>
   csi.storage.k8s.io/node-stage-secret-name: <csi-node-secret>
   csi.storage.k8s.io/node-stage-secret-namespace: <namespace>
-reclaimPolicy: Delete
+reclaimPolicy: Retain
 allowVolumeExpansion: true
 volumeBindingMode: Immediate
 ```

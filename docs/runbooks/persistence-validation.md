@@ -29,6 +29,8 @@ On failure, inspect Pod events, PVC/PV state and CSI/backend health. The marker 
 
 ## Data lifecycle
 
-Keep the PVC while testing pod replacement. The example StorageClasses use `reclaimPolicy: Delete`; deleting the PVC can also delete its dynamically provisioned backing volume. Inspect the bound PV's policy before cleanup. Do not delete the namespace, PVC or backing volume to test persistence. Production data needs its own backup/restore and retention procedure.
+Keep the PVC while testing pod replacement. New example StorageClasses use `reclaimPolicy: Retain` to keep backing data after PVC deletion, leaving manual recovery/cleanup to the operator. Existing PVs retain their own policy; a PV using `Delete` can remove the backing volume when its PVC is deleted. Inspect the bound PV's policy before cleanup. Do not delete the namespace, PVC or backing volume to test persistence. Production data needs its own backup/restore and retention procedure.
 
 References: [Persistent Volumes](https://kubernetes.io/docs/concepts/storage/persistent-volumes/) and [Deployment strategies](https://kubernetes.io/docs/concepts/workloads/controllers/deployment/).
+
+Changing these source files does not update existing StorageClasses or PV policies. For an existing installation, create a replacement StorageClass with a new name and review existing PVs separately; do not delete a bound PVC to change the class. Retain is not a backup.

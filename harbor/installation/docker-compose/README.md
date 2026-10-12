@@ -50,3 +50,5 @@ The generated deployment contains:
 - Only nginx exposes external ports.
 - Secrets and certificates are placeholders.
 - Replace all values before deployment.
+
+The hand-written `harbor/nginx/harbor.moein.local.conf` is also an architecture sketch. It lacks the complete installer-generated routing and registry token/authentication wiring; do not use it as a production proxy.

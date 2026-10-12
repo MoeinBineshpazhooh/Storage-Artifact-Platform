@@ -26,6 +26,8 @@
 - [Architecture](docs/architecture/README.md): storage and artifact responsibilities.
 - [Persistence test](docs/runbooks/persistence-validation.md): verify read/write and data survival after pod replacement.
 - [Repository checks](docs/runbooks/repository-validation.md): offline checks and GitHub Actions.
+- [Security review](docs/runbooks/security-review.md): findings, fixes, remaining environment checks and branch-rule status.
+- [Protection policy](SECURITY.md): secret scanning, dependency updates and proposed main branch rules.
 - [Troubleshooting](docs/runbooks/storage-troubleshooting.md): PVC, attachment and backend investigation.
 
 Examples require an existing storage backend and CSI integration unless their guide explicitly installs those prerequisites. Choose one example at a time; this repository contains alternative deployment paths and incomplete templates.

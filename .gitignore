@@ -15,3 +15,9 @@ minio-data/
 .venv/
 __pycache__/
 *.pyc
+
+# Generated installer configuration and local certificate bundles
+**/certs/
+harbor/installation/docker-compose/harbor.yml
+harbor/installation/docker-compose/docker-compose.yml
+harbor/installation/docker-compose/common/
