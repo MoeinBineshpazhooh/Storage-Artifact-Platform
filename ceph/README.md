@@ -20,6 +20,6 @@ Start with [Components](concepts/components.md), then follow [RADOS](concepts/ra
 
 ## 🔧 Operations
 
-[Operations](operations/README.md) covers OSD lifecycle, capacity, recovery and maintenance. [Troubleshooting](troubleshooting/README.md) follows the complete path from host/network through MON, OSD, PG/CRUSH, RBD, CephX, CSI and Kubernetes.
+The [Ceph guide](../docs/kubernetes-storage/ceph/README.md) documents the lab and integration model. Use the [storage troubleshooting runbook](../docs/runbooks/storage-troubleshooting.md) to inspect PVC, attachment and backend symptoms, and the [persistence test](../docs/runbooks/persistence-validation.md) to check data survival after Pod replacement. Dedicated OSD lifecycle and maintenance runbooks remain future work.
 
 All examples are sanitized and use placeholders. Never commit real credentials, internal hostnames or production IPs.

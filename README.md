@@ -21,6 +21,15 @@
 
 ---
 
+## Start here
+
+- [Architecture](docs/architecture/README.md): storage and artifact responsibilities.
+- [Persistence test](docs/runbooks/persistence-validation.md): verify read/write and data survival after pod replacement.
+- [Repository checks](docs/runbooks/repository-validation.md): offline checks and GitHub Actions.
+- [Troubleshooting](docs/runbooks/storage-troubleshooting.md): PVC, attachment and backend investigation.
+
+Examples require an existing storage backend and CSI integration unless their guide explicitly installs those prerequisites. Choose one example at a time; this repository contains alternative deployment paths and incomplete templates.
+
 ## 🎯 What I Actually Implemented
 
 | Technology | Experience | What is documented |
@@ -462,9 +471,9 @@ Storage-Artifact-Platform/
 - [x] Portfolio-wide `moein.local` domain
 - [x] Sanitized implementation manifests
 - [ ] Complete technology-specific deployment runbooks
-- [ ] Add reusable validation scripts
+- [x] Add reusable persistence and repository validation scripts
 - [ ] Add committed Mermaid/SVG architecture assets
-- [ ] Add CI validation for Kubernetes YAML
+- [x] Add CI checks for YAML syntax and storage example consistency
 
 ---
 

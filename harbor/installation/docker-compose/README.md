@@ -2,7 +2,9 @@
 
 ## Purpose
 
-This implementation provides a practical Harbor deployment template using Docker Compose.
+The supplied `docker-compose.yml.example` illustrates Harbor's service architecture. It lacks the complete generated configuration and is not an installable Harbor deployment.
+
+For deployment, obtain a tested official Harbor installer release, configure its matching `harbor.yml.tmpl` locally, and run the installer to generate the required configuration and Compose stack. The reduced `harbor.yml.example` here is reference material, not a replacement for that release's template. Keep generated credentials and private keys outside Git. Follow the [official installation guide](https://goharbor.io/docs/main/install-config/) for the selected release.
 
 The goal is to demonstrate:
 

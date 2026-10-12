@@ -10,3 +10,8 @@
 # Local state / generated data
 minio-data/
 *.log
+
+# Python validation tooling
+.venv/
+__pycache__/
+*.pyc

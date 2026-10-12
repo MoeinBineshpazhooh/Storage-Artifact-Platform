@@ -32,6 +32,8 @@ metadata:
   namespace: default
 spec:
   replicas: 1
+  strategy:
+    type: Recreate
   selector:
     matchLabels:
       app: longhorn-storage-test
@@ -46,8 +48,12 @@ spec:
           command: ["sh", "-c"]
           args:
             - |
-              echo "Longhorn storage validation" > /data/health.txt
-              sleep 3600
+              set -eu
+              if [ ! -e /data/health.txt ]; then
+                printf "%s\n" "Longhorn storage validation" > /data/health.txt
+              fi
+              cat /data/health.txt
+              exec sleep 86400
           volumeMounts:
             - name: data
               mountPath: /data

@@ -4,6 +4,8 @@ metadata:
   name: rook-ceph-rbd-test
 spec:
   replicas: 1
+  strategy:
+    type: Recreate
   selector:
     matchLabels:
       app: rook-ceph-rbd-test
