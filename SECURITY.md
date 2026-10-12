@@ -4,7 +4,7 @@ Use only sanitized examples in this repository. Report a real credential exposur
 
 ## Checks
 
-`validate` checks example consistency and lab defaults. `secrets` uses pinned Gitleaks to detect credential patterns in pushed/PR commits. A manual Secret scanning workflow run scans available Git history. Reports are redacted, with automatic PR comments, summary output and report artifacts disabled. Scanning is pattern-based and does not prove that all credentials are absent. Do not allowlist entire directories to hide findings; investigate and narrowly document any verified false positive.
+`validate` checks example consistency and lab defaults. `secrets` uses pinned Gitleaks to check pushed/PR commits, followed by an explicit scan of all fetched Git history on each run. Reports are redacted, with automatic PR comments, summary output and report artifacts disabled. Scanning is pattern-based and does not prove that all credentials are absent. Do not allowlist entire directories to hide findings; investigate and narrowly document any verified false positive.
 
 Dependabot proposes weekly GitHub Actions and Python dependency updates after its configuration reaches the default branch. Updates still need review and passing checks; there is no automatic merge. Image choices in local environment files require a separate vulnerability/compatibility review.
 
